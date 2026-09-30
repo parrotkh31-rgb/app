@@ -1,0 +1,743 @@
+.save-btn {
+  font-family: inherit;
+  font-size: 20px;
+  background: #212121;
+  color: white;
+  fill: rgb(155, 153, 153);
+  padding: 0.7em 1em;
+  padding-left: 0.9em;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 15px;
+  font-weight: 1000;
+}
+
+.save-btn .save-text {
+  display: block;
+  margin-left: 0.3em;
+  transition: all 0.3s ease-in-out;
+}
+
+.save-btn .save-icon {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.save-btn:hover {
+  background: #000;
+}
+
+.save-btn:hover .save-icon-box {
+  transform: scale(1.25);
+  transition: 0.5s linear;
+}
+
+.save-btn:hover .save-icon {
+  transform: translateX(1.2em) scale(1.1);
+  fill: #fff;
+}
+
+.save-btn:hover .save-text {
+  opacity: 0;
+  transition: 0.5s linear;
+}
+
+.save-btn:active {
+  transform: scale(0.95);
+}
+
+.game-play-btn {
+    position: relative;
+    width: 14em;
+    height: 5em;
+    outline: none;
+    transition: 0.1s;
+    background-color: transparent;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+}
+#gamePlayFrame {
+    --game-color: #2761c3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    border: 5px double var(--game-color);
+    box-shadow: inset 0px 0px 15px #195480;
+
+    -webkit-clip-path: polygon(
+        30% 0%,
+        70% 0%,
+        100% 30%,
+        100% 70%,
+        70% 100%,
+        30% 100%,
+        0% 70%,
+        0% 30%
+    );
+}
+
+.game-arrow {
+    position: absolute;
+    transition: 0.2s;
+    background-color: #2761c3;
+    top: 35%;
+    width: 11%;
+    height: 30%;
+}
+
+#gameArrowLeft {
+    left: -13.5%;
+
+    -webkit-clip-path: polygon(
+        100% 0,
+        100% 100%,
+        0 50%
+    );
+}
+
+#gameArrowRight {
+    left: 102%;
+
+    -webkit-clip-path: polygon(
+        100% 49%,
+        0 0,
+        0 100%
+    );
+}
+
+
+/* =========================
+   ARROW HOVER
+========================= */
+
+.game-play-btn:hover #gameArrowRight {
+    background-color: #27c39f;
+    left: -15%;
+
+    animation:
+        gameRightArrowAnim
+        0.6s ease-in-out
+        both infinite alternate;
+}
+
+.game-play-btn:hover #gameArrowLeft {
+    background-color: #27c39f;
+    left: 103%;
+
+    animation:
+        gameLeftArrowAnim
+        0.6s ease-in-out
+        both infinite alternate;
+}
+
+
+/* =========================
+   CORNERS
+========================= */
+
+.game-corner {
+    position: absolute;
+    width: 4em;
+    height: 4em;
+    background-color: #2761c3;
+
+    box-shadow:
+        inset 1px 1px 8px #2781c3;
+
+    transform: scale(1) rotate(45deg);
+    transition: 0.2s;
+}
+
+
+/* TOP LEFT */
+
+#gameCornerTL {
+    top: -1.96em;
+    left: -3em;
+}
+
+
+/* TOP RIGHT */
+
+#gameCornerTR {
+    top: -1.98em;
+    left: 91%;
+}
+
+
+/* BOTTOM LEFT */
+
+#gameCornerBL {
+    top: 2.10em;
+    left: -2.15em;
+}
+
+
+/* BOTTOM RIGHT */
+
+#gameCornerBR {
+    top: 45%;
+    left: 88%;
+}
+
+
+/* =========================
+   CORNER ANIMATION
+========================= */
+
+.game-play-btn:hover #gameCornerTL {
+    animation:
+        gameChangeColor
+        0.1s ease-in-out 0.05s both,
+        gameLightEffect
+        0.2s linear 0.4s both;
+}
+
+.game-play-btn:hover #gameCornerTR {
+    animation:
+        gameChangeColor
+        0.1s ease-in-out 0.15s both,
+        gameLightEffect
+        0.2s linear 0.4s both;
+}
+
+.game-play-btn:hover #gameCornerBR {
+    animation:
+        gameChangeColor
+        0.1s ease-in-out 0.25s both,
+        gameLightEffect
+        0.2s linear 0.4s both;
+}
+
+.game-play-btn:hover #gameCornerBL {
+    animation:
+        gameChangeColor
+        0.1s ease-in-out 0.35s both,
+        gameLightEffect
+        0.2s linear 0.4s both;
+}
+
+
+/* =========================
+   CORNER SCALE
+========================= */
+
+.game-play-btn:hover .game-corner {
+    transform: scale(1.25) rotate(45deg);
+}
+
+
+/* =========================
+   FRAME GLOW
+========================= */
+
+.game-play-btn:hover #gamePlayFrame {
+    animation:
+        gameGreenGlow
+        0.2s ease-in-out 0.55s both;
+
+    --game-color: #27c39f;
+}
+
+
+/* =========================
+   COLOR CHANGE
+========================= */
+
+@keyframes gameChangeColor {
+
+    from {
+        background-color: #2781c3;
+    }
+
+    to {
+        background-color: #27c39f;
+    }
+}
+
+
+/* =========================
+   LIGHT EFFECT
+========================= */
+
+@keyframes gameLightEffect {
+
+    from {
+        box-shadow:
+            1px 1px 5px #27c39f;
+    }
+
+    to {
+        box-shadow:
+            0 0 2px #27c39f;
+    }
+}
+
+
+/* =========================
+   GREEN GLOW
+========================= */
+
+@keyframes gameGreenGlow {
+
+    from {
+        box-shadow:
+            inset 0px 0px 15px #195480;
+    }
+
+    to {
+        box-shadow:
+            inset 0px 0px 32px #27c39f;
+    }
+}
+
+
+/* =========================
+   LEFT ARROW
+========================= */
+
+@keyframes gameLeftArrowAnim {
+
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(10px);
+    }
+}
+
+
+/* =========================
+   RIGHT ARROW
+========================= */
+
+@keyframes gameRightArrowAnim {
+
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-10px);
+    }
+}
+
+
+/* =========================
+   CLICK EFFECT
+========================= */
+
+.game-play-btn:active {
+    transform: scale(0.95);
+}
+
+.edit-action-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100px;
+    height: 40px;
+
+    border: none;
+    padding: 0px 20px;
+
+    background-color: rgb(58, 58, 58);
+    color: white;
+
+    font-weight: 500;
+    font-size: 14px;
+
+    cursor: pointer;
+    border-radius: 10px;
+
+    box-shadow: 5px 5px 0px rgb(15, 15, 15);
+
+    transition-duration: 0.3s;
+}
+
+
+/* EDIT ICON */
+
+.edit-action-icon {
+    width: 13px;
+
+    position: absolute;
+    right: 0;
+
+    margin-right: 20px;
+
+    fill: white;
+
+    transition-duration: 0.3s;
+}
+
+
+/* HOVER BUTTON */
+
+.edit-action-btn:hover {
+    color: transparent;
+}
+
+
+/* HOVER ICON */
+
+.edit-action-btn:hover .edit-action-icon {
+    right: 43%;
+
+    margin: 0;
+    padding: 0;
+    border: none;
+
+    transition-duration: 0.3s;
+}
+
+
+/* CLICK */
+
+.edit-action-btn:active {
+    transform: translate(3px, 3px);
+
+    transition-duration: 0.3s;
+
+    box-shadow: 2px 2px 0px rgb(140, 32, 212);
+}
+
+.sparkle-action-btn {
+    position: relative;
+    padding: 12px 35px;
+    background: #161616;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fffdef;
+    border: 3px solid #030303;
+    border-radius: 8px;
+    box-shadow: 0 0 0 #fec1958c;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* STAR 1 */
+
+.sparkle-item-one {
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    width: 25px;
+    height: auto;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -5;
+    transition: all 1s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+}
+
+/* STAR 2 */
+
+.sparkle-item-two {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    width: 15px;
+    height: auto;
+    filter: drop-shadow(0 0 0 #e7e6e6);
+    z-index: -5;
+    transition: all 1s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+/* STAR 3 */
+
+.sparkle-item-three {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    width: 5px;
+    height: auto;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -5;
+    transition: all 1s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+/* STAR 4 */
+
+.sparkle-item-four {
+    position: absolute;
+    top: 20%;
+    left: 40%;
+    width: 8px;
+    height: auto;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -5;
+    transition: all 0.8s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+/* STAR 5 */
+
+.sparkle-item-five {
+    position: absolute;
+    top: 25%;
+    left: 45%;
+    width: 15px;
+    height: auto;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -5;
+    transition: all 0.6s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+/* STAR 6 */
+
+.sparkle-item-six {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    width: 5px;
+    height: auto;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -5;
+    transition: all 0.8s ease;
+}
+
+
+/* SVG */
+
+.sparkle-shape {
+    fill: #080808;
+}
+
+
+/* BUTTON HOVER */
+
+.sparkle-action-btn:hover {
+    background: transparent;
+    color: #030303;
+    box-shadow: 0 0 25px #fec1958c;
+}
+
+
+/* STAR 1 HOVER */
+
+.sparkle-action-btn:hover .sparkle-item-one {
+    top: -80%;
+    left: -30%;
+    width: 25px;
+    filter: drop-shadow(0 0 10px #030303);
+    z-index: 2;
+}
+
+
+/* STAR 2 HOVER */
+
+.sparkle-action-btn:hover .sparkle-item-two {
+    top: -25%;
+    left: 10%;
+    width: 15px;
+    filter: drop-shadow(0 0 10px #020202);
+    z-index: 2;
+}
+
+
+/* STAR 3 HOVER */
+
+.sparkle-action-btn:hover .sparkle-item-three {
+    top: 55%;
+    left: 25%;
+    width: 5px;
+    filter: drop-shadow(0 0 10px #080808);
+    z-index: 2;
+}
+
+
+/* STAR 4 HOVER */
+
+.sparkle-action-btn:hover .sparkle-item-four {
+    top: 30%;
+    left: 80%;
+    width: 8px;
+    filter: drop-shadow(0 0 10px #020202);
+    z-index: 2;
+}
+
+
+/* STAR 5 HOVER */
+
+.sparkle-action-btn:hover .sparkle-item-five {
+    top: 25%;
+    left: 115%;
+    width: 15px;
+    filter: drop-shadow(0 0 10px #020202);
+    z-index: 2;
+}
+
+
+/* STAR 6 HOVER */
+
+.sparkle-action-btn:hover .sparkle-item-six {
+    top: 5%;
+    left: 60%;
+    width: 5px;
+    filter: drop-shadow(0 0 10px #0e0e0e);
+    z-index: 2;
+}
+
+
+.payment-action-btn {
+  position: relative;
+  padding: 12px 24px;
+  font-size: 16px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  transition: all 0.3s ease;
+}
+
+.payment-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.payment-icon-box {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.payment-action-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 24px;
+  height: 24px;
+
+  color: #22c55e;
+
+  opacity: 0;
+  visibility: hidden;
+}
+
+.payment-default-icon {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hover animations */
+
+.payment-action-btn:hover .payment-action-icon {
+  animation: none;
+}
+
+.payment-action-btn:hover .payment-wallet-icon {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.payment-action-btn:hover .payment-card-icon {
+  animation: paymentIconRotate 2.5s infinite;
+  animation-delay: 0s;
+}
+
+.payment-action-btn:hover .payment-money-icon {
+  animation: paymentIconRotate 2.5s infinite;
+  animation-delay: 0.5s;
+}
+
+.payment-action-btn:hover .payment-dollar-icon {
+  animation: paymentIconRotate 2.5s infinite;
+  animation-delay: 1s;
+}
+
+.payment-action-btn:hover .payment-check-icon {
+  animation: paymentIconRotate 2.5s infinite;
+  animation-delay: 1.5s;
+}
+
+/* Click state */
+
+.payment-action-btn:active .payment-action-icon {
+  animation: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.payment-action-btn:active .payment-check-icon {
+  animation: paymentCheckAppear 0.6s ease forwards;
+  visibility: visible;
+}
+
+.payment-action-text {
+  font-weight: 600;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+/* Icon animation */
+
+@keyframes paymentIconRotate {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.5);
+  }
+
+  5% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  15% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  20% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.5);
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.5);
+  }
+}
+
+/* Checkmark animation */
+
+@keyframes paymentCheckAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-45deg);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2) rotate(0deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
