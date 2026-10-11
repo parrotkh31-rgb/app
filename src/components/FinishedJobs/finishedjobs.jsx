@@ -46,7 +46,7 @@ function formatTaskTime(timeValue) {
   }).format(date);
 }
 
-function FinishedJobsPage({ onBack, tasks = [] }) {
+function FinishedJobsPage({ onBack, tasks = [], storageError = '' }) {
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
   const [pendingTaskIndex, setPendingTaskIndex] = useState(null);
   const selectedTask = selectedTaskIndex === null ? null : tasks[selectedTaskIndex];
@@ -125,6 +125,7 @@ function FinishedJobsPage({ onBack, tasks = [] }) {
         Back to menu
       </button>
       <h1 className="finished-jobs-title">Finished Jobs</h1>
+      {storageError && <p className="finished-jobs-error" role="alert">{storageError}</p>}
       <section className="finished-jobs-list" aria-label="Finished tasks">
         {tasks.length === 0 ? (
           <p className="finished-jobs-empty">No finished tasks yet.</p>

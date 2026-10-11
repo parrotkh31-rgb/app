@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import './menu.css';
 import Zagruzka from '../xagruzka/zagruzka';
 import SavePage from '../Save/save';
 import EditPage from '../Edit/edit';
 import FinishedJobsPage from '../FinishedJobs/finishedjobs';
 import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { doc, onSnapshot, runTransaction, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 
 function Menu({ name, userId, onLogout, TodoMenu }) {
   const [showTodoMenu, setShowTodoMenu] = useState(false);
@@ -16,37 +17,138 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
   const [finishedTasks, setFinishedTasks] = useState([]);
   const [tasksLoaded, setTasksLoaded] = useState(false);
   const [storageError, setStorageError] = useState('');
+  const [connectionError, setConnectionError] = useState('');
+  const [syncAttempt, setSyncAttempt] = useState(0);
   const [isLoadingTodo, setIsLoadingTodo] = useState(false);
   const [isLoadingSave, setIsLoadingSave] = useState(false);
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
   const [isLoadingFinishedJobs, setIsLoadingFinishedJobs] = useState(false);
+  const syncedTasksRef = useRef('');
+  const pendingWritesRef = useRef(Promise.resolve());
 
   useEffect(() => {
     setTasksLoaded(false);
     setSavedTasks([]);
     setFinishedTasks([]);
     setStorageError('');
+    setConnectionError('');
+    syncedTasksRef.current = '';
+    let isCancelled = false;
+    let unsubscribe = () => {};
 
-    try {
-      const storedTasks = window.localStorage.getItem(`todo-app:tasks:${userId}`);
-      const tasks = storedTasks ? JSON.parse(storedTasks) : [];
-      const storedFinishedTasks = window.localStorage.getItem(`todo-app:finished:${userId}`);
-      const loadedFinishedTasks = storedFinishedTasks ? JSON.parse(storedFinishedTasks) : [];
-      if (
-        !Array.isArray(tasks) ||
-        tasks.some((task) => !task || typeof task.title !== 'string') ||
-        !Array.isArray(loadedFinishedTasks) ||
-        loadedFinishedTasks.some((task) => !task || typeof task.title !== 'string')
-      ) {
+    function readLocalTasks(key) {
+      const storedValue = window.localStorage.getItem(key);
+      const parsed = storedValue ? JSON.parse(storedValue) : [];
+      if (!Array.isArray(parsed) || parsed.some((task) => !task || typeof task.title !== 'string')) {
         throw new Error('Saved task data has an invalid format.');
       }
-      setSavedTasks(tasks);
-      setFinishedTasks(loadedFinishedTasks);
-      setTasksLoaded(true);
-    } catch {
-      setStorageError('Could not load saved tasks from this browser.');
+      return parsed;
     }
-  }, [userId]);
+
+    function addTaskIds(tasks, type) {
+      return tasks.map((task, index) => {
+        const taskId = task.taskId || task.slipId || `legacy-${type}-${index}-${task.title}`;
+        return { ...task, taskId };
+      });
+    }
+
+    function mergeTasks(remoteTasks, localTasks) {
+      const byId = new Map(remoteTasks.map((task) => [task.taskId, task]));
+      localTasks.forEach((task) => byId.set(task.taskId, task));
+      return Array.from(byId.values());
+    }
+
+    function normalizeCloudData(data) {
+      const activeTasks = data.activeTasks;
+      const completedTasks = data.completedTasks;
+      if (
+        !Array.isArray(activeTasks) ||
+        !Array.isArray(completedTasks) ||
+        activeTasks.some((task) => !task || typeof task.title !== 'string') ||
+        completedTasks.some((task) => !task || typeof task.title !== 'string')
+      ) {
+        throw new Error('Cloud task data has an invalid format.');
+      }
+      return {
+        activeTasks: addTaskIds(activeTasks, 'active'),
+        completedTasks: addTaskIds(completedTasks, 'completed'),
+      };
+    }
+
+    async function connectTasks() {
+      try {
+        const localTasks = addTaskIds(
+          readLocalTasks(`todo-app:tasks:${userId}`),
+          'active'
+        );
+        const localFinishedTasks = addTaskIds(
+          readLocalTasks(`todo-app:finished:${userId}`),
+          'completed'
+        );
+        const migrationKey = `todo-app:cloud-migrated:${userId}`;
+        const shouldMigrateLocalTasks = window.localStorage.getItem(migrationKey) !== 'true';
+        const userTasksRef = doc(db, 'userTasks', userId);
+
+        const initialData = await runTransaction(db, async (transaction) => {
+          const userTasksSnapshot = await transaction.get(userTasksRef);
+          const remoteData = userTasksSnapshot.exists()
+            ? normalizeCloudData(userTasksSnapshot.data())
+            : { activeTasks: [], completedTasks: [] };
+          const activeTasks = shouldMigrateLocalTasks
+            ? mergeTasks(remoteData.activeTasks, localTasks)
+            : userTasksSnapshot.exists() ? remoteData.activeTasks : localTasks;
+          const completedTasks = shouldMigrateLocalTasks
+            ? mergeTasks(remoteData.completedTasks, localFinishedTasks)
+            : userTasksSnapshot.exists() ? remoteData.completedTasks : localFinishedTasks;
+          const completedIds = new Set(completedTasks.map((task) => task.taskId));
+          const data = {
+            activeTasks: activeTasks.filter((task) => !completedIds.has(task.taskId)),
+            completedTasks,
+          };
+          transaction.set(userTasksRef, data);
+          return data;
+        });
+
+        if (isCancelled) return;
+        window.localStorage.setItem(migrationKey, 'true');
+        const initialSerialized = JSON.stringify(initialData);
+        syncedTasksRef.current = initialSerialized;
+        setSavedTasks(initialData.activeTasks);
+        setFinishedTasks(initialData.completedTasks);
+        setTasksLoaded(true);
+
+        unsubscribe = onSnapshot(userTasksRef, (snapshot) => {
+          try {
+            if (!snapshot.exists()) {
+              throw new Error('Cloud task data is missing.');
+            }
+            const cloudData = normalizeCloudData(snapshot.data());
+            const completedIds = new Set(cloudData.completedTasks.map((task) => task.taskId));
+            cloudData.activeTasks = cloudData.activeTasks.filter((task) => !completedIds.has(task.taskId));
+            syncedTasksRef.current = JSON.stringify(cloudData);
+            setSavedTasks(cloudData.activeTasks);
+            setFinishedTasks(cloudData.completedTasks);
+            window.localStorage.setItem(`todo-app:tasks:${userId}`, JSON.stringify(cloudData.activeTasks));
+            window.localStorage.setItem(`todo-app:finished:${userId}`, JSON.stringify(cloudData.completedTasks));
+            setStorageError('');
+          } catch (error) {
+            setStorageError(error.message || 'Could not read synced tasks.');
+          }
+        }, (error) => {
+          setStorageError(`Could not sync tasks with the cloud: ${error.message}`);
+        });
+      } catch (error) {
+        if (isCancelled) return;
+        setConnectionError(`Could not connect to cloud tasks: ${error.message}`);
+      }
+    }
+
+    connectTasks();
+    return () => {
+      isCancelled = true;
+      unsubscribe();
+    };
+  }, [syncAttempt, userId]);
 
   useEffect(() => {
     if (!tasksLoaded) return;
@@ -54,17 +156,35 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
     try {
       window.localStorage.setItem(`todo-app:tasks:${userId}`, JSON.stringify(savedTasks));
       window.localStorage.setItem(`todo-app:finished:${userId}`, JSON.stringify(finishedTasks));
-      setStorageError('');
     } catch {
-      setStorageError('Could not save tasks in this browser. Changes may be lost after refresh.');
+      setStorageError('Could not update the local task cache. Cloud tasks are still being synced.');
     }
   }, [finishedTasks, savedTasks, tasksLoaded, userId]);
 
+  useEffect(() => {
+    if (!tasksLoaded) return;
+    const userTasksRef = doc(db, 'userTasks', userId);
+    const data = { activeTasks: savedTasks, completedTasks: finishedTasks };
+    const serialized = JSON.stringify(data);
+    if (serialized === syncedTasksRef.current) return;
+
+    pendingWritesRef.current = pendingWritesRef.current
+      .catch(() => {})
+      .then(() => setDoc(userTasksRef, data))
+      .then(() => {
+        syncedTasksRef.current = serialized;
+        setStorageError('');
+      })
+      .catch((error) => {
+        setStorageError(`Could not sync tasks with the cloud: ${error.message}`);
+      });
+  }, [finishedTasks, savedTasks, tasksLoaded, userId]);
+
   function createTask(task) {
-    const slipId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
+    const taskId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`.toUpperCase();
     setSavedTasks((tasks) => [
       ...tasks,
-      { ...task, createdAt: new Date().toISOString(), slipId },
+      { ...task, taskId, createdAt: new Date().toISOString(), slipId: taskId },
     ]);
   }
 
@@ -96,6 +216,10 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
       user,
       EmailAuthProvider.credential(user.email, password)
     );
+  }
+
+  function retryCloudSync() {
+    setSyncAttempt((attempt) => attempt + 1);
   }
 
   useEffect(() => {
@@ -134,6 +258,26 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
     );
   }
 
+  if (!tasksLoaded) {
+    return (
+      <main className="todo-loading-page">
+        <div className="todo-loading-content" role={connectionError ? 'alert' : 'status'} aria-live="polite">
+          {connectionError ? (
+            <>
+              <p>{connectionError}</p>
+              <button type="button" onClick={retryCloudSync}>Retry sync</button>
+            </>
+          ) : (
+            <>
+              <Zagruzka />
+              <p>Syncing your tasks...</p>
+            </>
+          )}
+        </div>
+      </main>
+    );
+  }
+
   if (showTodoMenu) {
     return (
       <TodoMenu
@@ -162,6 +306,7 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
         onBack={() => setShowEdit(false)}
         tasks={savedTasks}
         onUpdateTask={updateTask}
+        storageError={storageError}
       />
     );
   }
@@ -171,6 +316,7 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
       <FinishedJobsPage
         onBack={() => setShowFinishedJobs(false)}
         tasks={finishedTasks}
+        storageError={storageError}
       />
     );
   }
@@ -179,6 +325,7 @@ function Menu({ name, userId, onLogout, TodoMenu }) {
     <div>
     <main className="menu-page">
       <section className="menu-account" aria-label="User account">
+        {storageError && <p className="menu-sync-error" role="alert">{storageError}</p>}
         <h1 className="menu-account-name">
           Hello, {name}! <span aria-hidden="true">👋</span>
         </h1>

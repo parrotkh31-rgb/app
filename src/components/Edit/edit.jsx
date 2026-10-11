@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './edit.css';
 
-function EditPage({ onBack, tasks, onUpdateTask }) {
+function EditPage({ onBack, tasks, onUpdateTask, storageError }) {
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
   const [task, setTask] = useState(null);
   const selectedTask = selectedTaskIndex === null ? null : tasks[selectedTaskIndex];
@@ -51,6 +51,7 @@ function EditPage({ onBack, tasks, onUpdateTask }) {
         {selectedTaskIndex === null ? 'Back to menu' : 'Back to tasks'}
       </button>
       <h1 className="edit-title">{selectedTask ? 'Edit Task' : 'Edit Tasks'}</h1>
+      {storageError && <p className="edit-storage-error" role="alert">{storageError}</p>}
       {selectedTaskIndex === null ? (
         <section className="edit-task-list" aria-label="Tasks to edit">
           {tasks.length === 0 ? (

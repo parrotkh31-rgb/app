@@ -38,6 +38,29 @@
   margin: 0;
 }
 
+.todo-loading-content button {
+  padding: 10px 16px;
+  border: 1px solid #00eaff;
+  border-radius: 6px;
+  background: transparent;
+  color: #00eaff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.todo-loading-content button:hover,
+.todo-loading-content button:focus-visible {
+  background: #00eaff;
+  color: #050505;
+}
+
+.menu-sync-error {
+  max-width: min(90vw, 560px);
+  margin: 0;
+  color: #ff8a8a;
+  text-align: center;
+}
+
 .save-page {
   min-height: 100vh;
   box-sizing: border-box;
