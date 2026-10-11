@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './save.css';
 import Zagruzka from '../xagruzka/zagruzka';
 
+const darkPageStyle = {
+  backgroundColor: '#050505',
+  color: '#f7ffff',
+  colorScheme: 'dark',
+  forcedColorAdjust: 'none',
+};
+
 function formatCreatedAt(createdAt) {
   if (!createdAt) return 'Creation time unavailable';
 
@@ -69,6 +76,24 @@ function SavePage({
   const selectedTask = selectedTaskIndex === null ? null : tasks[selectedTaskIndex];
 
   useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const previousRootBackground = root.style.backgroundColor;
+    const previousBodyBackground = body.style.backgroundColor;
+    const previousColorScheme = root.style.colorScheme;
+
+    root.style.backgroundColor = '#050505';
+    body.style.backgroundColor = '#050505';
+    root.style.colorScheme = 'dark';
+
+    return () => {
+      root.style.backgroundColor = previousRootBackground;
+      body.style.backgroundColor = previousBodyBackground;
+      root.style.colorScheme = previousColorScheme;
+    };
+  }, []);
+
+  useEffect(() => {
     if (pendingTaskIndex === null) return undefined;
 
     const timeoutId = window.setTimeout(() => {
@@ -124,7 +149,7 @@ function SavePage({
 
   if (pendingTaskIndex !== null) {
     return (
-      <main className="save-loading-page">
+      <main className="save-loading-page" style={darkPageStyle}>
         <div className="save-loading-content" role="status" aria-live="polite">
           <Zagruzka />
           <p>Opening task...</p>
@@ -135,7 +160,7 @@ function SavePage({
 
   if (selectedTask) {
     return (
-      <main className="save-page save-detail-page">
+      <main className="save-page save-detail-page" style={darkPageStyle}>
         <button
           className="save-back"
           type="button"
@@ -144,7 +169,11 @@ function SavePage({
           Back to tasks
         </button>
         {storageError && <p className="save-storage-error" role="alert">{storageError}</p>}
-        <article className="task-receipt" aria-label={`Task receipt: ${selectedTask.title}`}>
+        <article
+          className="task-receipt"
+          style={{ forcedColorAdjust: 'none' }}
+          aria-label={`Task receipt: ${selectedTask.title}`}
+        >
           <div className="receipt-rule receipt-rule-top" aria-hidden="true"></div>
           <header className="receipt-header">
             <h1>TASK RECEIPT</h1>
@@ -258,7 +287,7 @@ function SavePage({
   }
 
   return (
-    <main className="save-page">
+    <main className="save-page" style={darkPageStyle}>
       <button className="save-back" type="button" onClick={onBack}>
         Back to menu
       </button>
