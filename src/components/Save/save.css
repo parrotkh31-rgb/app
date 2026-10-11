@@ -1,9 +1,14 @@
 .save-page {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
   min-height: 100vh;
   box-sizing: border-box;
   padding: 24px;
-  background: #050505;
+  background: #050505 !important;
   color: #f7ffff;
+  forced-color-adjust: none;
+  overflow-y: auto;
 }
 
 .save-back {
@@ -78,12 +83,17 @@
 }
 
 .save-loading-page {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
   box-sizing: border-box;
-  background: #050505;
+  background: #050505 !important;
+  forced-color-adjust: none;
+  overflow-y: auto;
 }
 
 .save-loading-content {
