@@ -1,0 +1,422 @@
+* {
+    box-sizing: border-box;
+}
+
+.new-task-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 20%, #182033 0%, transparent 30%),
+        radial-gradient(circle at 80% 80%, #101827 0%, transparent 30%),
+        #050505;
+    color: white;
+    padding: 45px 20px;
+}
+
+.new-task-container {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.new-task-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 11px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+
+    color: #aaa;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        color 0.3s ease,
+        border 0.3s ease;
+}
+
+.new-task-back:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+
+    transform: translateX(-5px);
+}
+
+.back-arrow {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.new-task-back:hover .back-arrow {
+    transform: translateX(-5px);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.new-task-header {
+    margin-top: 35px;
+    margin-bottom: 28px;
+}
+
+.new-task-header h1 {
+    margin: 0;
+
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -1px;
+
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #8ea4ff
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.new-task-header p {
+    margin-top: 10px;
+
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.new-task-form {
+    padding: 32px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+
+    background: rgba(15, 15, 17, 0.85);
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+
+/* =========================
+   INPUT GROUP
+========================= */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    color: #aaa;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: color 0.3s ease;
+}
+
+
+/* =========================
+   INPUTS
+========================= */
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+
+    padding: 14px 16px;
+
+    border: 1px solid #292929;
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #0b0b0d;
+    color: white;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition:
+        border 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.3s ease,
+        background 0.3s ease;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+
+/* Placeholder */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #555;
+    transition: color 0.3s ease;
+}
+
+
+/* Hover */
+
+.form-group input:hover,
+.form-group textarea:hover,
+.form-group select:hover {
+    border-color: #444;
+    background: #0e0e10;
+}
+
+
+/* Focus */
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #637cff;
+
+    background: #0d0f15;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 124, 255, 0.08),
+        0 0 25px rgba(99, 124, 255, 0.12);
+
+    transform: translateY(-2px);
+}
+
+.form-group:focus-within label {
+    color: #8195ff;
+}
+
+.form-group:focus-within input::placeholder,
+.form-group:focus-within textarea::placeholder {
+    color: #777;
+}
+
+
+/* =========================
+   ROW
+========================= */
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.new-task-buttons {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: 10px;
+}
+
+.new-task-buttons button {
+    border: none;
+    border-radius: 12px;
+
+    padding: 13px 22px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+}
+
+
+/* Cancel */
+
+.new-task-cancel {
+    background: #18181a;
+    border: 1px solid #292929 !important;
+
+    color: #aaa;
+}
+
+.new-task-cancel:hover {
+    color: white;
+    background: #222;
+
+    transform: translateY(-2px);
+}
+
+
+/* Submit */
+
+.new-task-submit {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: white;
+    color: black;
+
+    min-width: 145px;
+    justify-content: center;
+}
+
+.new-task-submit:hover {
+    background: #dfe5ff;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px rgba(120, 140, 255, 0.2);
+}
+
+.submit-arrow {
+    font-size: 18px;
+
+    transition: transform 0.3s ease;
+}
+
+.new-task-submit:hover .submit-arrow {
+    transform: translateX(5px);
+}
+
+.new-task-success {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(5, 5, 5, 0.88);
+    backdrop-filter: blur(8px);
+    animation: success-fade-in 0.25s ease-out both;
+}
+
+.new-task-success-card {
+    text-align: center;
+    animation: success-pop-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.new-task-success-check {
+    width: 112px;
+    height: 112px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 24px;
+    border: 4px solid #28d17c;
+    border-radius: 50%;
+    background: rgba(40, 209, 124, 0.12);
+    box-shadow: 0 0 45px rgba(40, 209, 124, 0.35);
+}
+
+.new-task-success-check svg {
+    width: 72px;
+    height: 72px;
+    fill: none;
+    stroke: #28d17c;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 55;
+    stroke-dashoffset: 55;
+    animation: success-check-draw 0.55s 0.15s ease-out forwards;
+}
+
+.new-task-success-card h2 {
+    margin: 0 0 10px;
+    color: #f7fff9;
+    font-size: clamp(26px, 5vw, 36px);
+}
+
+.new-task-success-card p {
+    margin: 0;
+    color: #b8c8be;
+    font-size: 16px;
+}
+
+@keyframes success-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes success-pop-in {
+    from { opacity: 0; transform: scale(0.78) translateY(12px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes success-check-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .new-task-page {
+        padding: 25px 15px;
+    }
+
+    .new-task-header h1 {
+        font-size: 30px;
+    }
+
+    .new-task-form {
+        padding: 22px;
+        border-radius: 18px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .new-task-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .new-task-buttons button {
+        width: 100%;
+    }
+}

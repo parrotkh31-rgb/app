@@ -3,6 +3,7 @@ import './register.css';
 import Save from '../mechanikanimation/save';
 import Zagruzka from '../xagruzka/zagruzka';
 import Menu from '../menu/menu';
+import { getUserDisplayName } from '../../utils/userDisplayName';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -12,7 +13,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../../firebase';
 
-function Register() {
+function Register({ TodoMenu }) {
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
@@ -54,7 +55,7 @@ function Register() {
       } else {
         const credential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
         await updateProfile(credential.user, { displayName: cleanNickname });
-        setAccount(credential.user);
+        setAccount({ ...credential.user, displayName: cleanNickname });
       }
       setStatus('home');
     } catch (authError) {
@@ -76,7 +77,14 @@ function Register() {
   }
 
   if (status === 'home' && account) {
-    return <Menu name={account.displayName || account.email} onLogout={() => signOut(auth)} />;
+    return (
+      <Menu
+        name={getUserDisplayName(account)}
+        userId={account.uid}
+        onLogout={() => signOut(auth)}
+        TodoMenu={TodoMenu}
+      />
+    );
   }
 
   return (

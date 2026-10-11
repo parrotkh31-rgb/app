@@ -1,0 +1,94 @@
+.finished-jobs-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24px;
+  background: #050505;
+  color: #f7ffff;
+}
+
+.finished-jobs-back {
+  padding: 10px 16px;
+  border: 1px solid #00eaff;
+  border-radius: 6px;
+  background: transparent;
+  color: #00eaff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.finished-jobs-back:hover,
+.finished-jobs-back:focus-visible {
+  background: #00eaff;
+  color: #050505;
+}
+
+.finished-jobs-title {
+  width: min(100%, 560px);
+  margin: 72px auto 0;
+  font-size: clamp(28px, 5vw, 42px);
+}
+
+.finished-jobs-list {
+  width: min(100%, 560px);
+  margin: 28px auto 0;
+}
+
+.finished-jobs-empty {
+  color: #a7b2b2;
+}
+
+.finished-job-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 14px 18px;
+  border: 1px solid rgb(40 209 124 / 35%);
+  border-radius: 8px;
+  background: rgb(40 209 124 / 8%);
+  color: #f7ffff;
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.finished-job-item:hover,
+.finished-job-item:focus-visible {
+  border-color: rgb(40 209 124 / 70%);
+  background: rgb(40 209 124 / 16%);
+}
+
+.finished-job-item:hover {
+  transform: translateY(-1px);
+}
+
+.finished-job-item:focus-visible {
+  outline: 2px solid #28d17c;
+  outline-offset: 3px;
+}
+
+.finished-job-item > span:first-child {
+  flex: 0 0 auto;
+  color: #28d17c;
+  font-weight: 700;
+}
+
+.finished-job-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.finished-job-title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.finished-job-date {
+  color: #a7b2b2;
+  font-size: 13px;
+}

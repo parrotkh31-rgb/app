@@ -1,0 +1,181 @@
+.edit-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24px;
+  background: #050505;
+  color: #f7ffff;
+}
+
+.edit-back {
+  padding: 10px 16px;
+  border: 1px solid #00eaff;
+  border-radius: 6px;
+  background: transparent;
+  color: #00eaff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.edit-back:hover,
+.edit-back:focus-visible {
+  background: #00eaff;
+  color: #050505;
+}
+
+.edit-title {
+  width: min(100%, 560px);
+  margin: 72px auto 0;
+  font-size: clamp(28px, 5vw, 42px);
+}
+
+.edit-task-list,
+.edit-task-form {
+  width: min(100%, 760px);
+  margin: 28px auto 0;
+}
+
+.edit-task-list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.edit-empty {
+  color: #a7b2b2;
+}
+
+.edit-task-button {
+  width: 100%;
+  padding: 15px 18px;
+  border: 1px solid rgb(0 234 255 / 40%);
+  border-radius: 9px;
+  background: rgb(0 234 255 / 7%);
+  color: #f7ffff;
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.edit-task-button:hover,
+.edit-task-button:focus-visible {
+  border-color: #00eaff;
+  background: rgb(0 234 255 / 15%);
+}
+
+.edit-task-button:focus-visible {
+  outline: 2px solid #00eaff;
+  outline-offset: 3px;
+}
+
+.edit-task-form {
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 18px;
+  background: #101113;
+  box-shadow: 0 24px 65px rgb(0 0 0 / 40%);
+}
+
+.edit-form-group {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.edit-form-group label {
+  color: #b7c0c0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.edit-form-group input,
+.edit-form-group textarea,
+.edit-form-group select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #303438;
+  border-radius: 9px;
+  outline: none;
+  background: #090a0c;
+  color: #f7ffff;
+  font: inherit;
+}
+
+.edit-form-group textarea {
+  min-height: 105px;
+  resize: vertical;
+}
+
+.edit-form-group input:focus,
+.edit-form-group textarea:focus,
+.edit-form-group select:focus {
+  border-color: #637cff;
+  box-shadow: 0 0 0 3px rgb(99 124 255 / 14%);
+}
+
+.edit-form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.edit-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.edit-form-actions button {
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: 9px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-cancel {
+  border: 1px solid #393d40;
+  background: #181a1c;
+  color: #c6cccc;
+}
+
+.edit-save {
+  border: 1px solid #00eaff;
+  background: #00eaff;
+  color: #050505;
+}
+
+.edit-form-actions button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 650px) {
+  .edit-page {
+    padding: 20px 16px;
+  }
+
+  .edit-title {
+    margin-top: 42px;
+  }
+
+  .edit-form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .edit-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .edit-form-actions button {
+    width: 100%;
+  }
+}
